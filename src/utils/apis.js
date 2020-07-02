@@ -1,22 +1,24 @@
-import { encode as btoa } from "base-64";
-import Axios from "axios";
-import { AsyncStorage } from "react-native";
+import {encode as btoa} from 'base-64';
+import Axios from 'axios';
+import {AsyncStorage} from 'react-native';
+import {_Alert} from '../components/Alert';
+import {i18n} from '../translations';
 
 // const baseurl = "http://192.168.57.12:8080/qsystem/mobile/rest";
 
-const baseurl = "http://appointment.cas-mew.gov.kw:8080/qsystem/mobile/rest";
-const username = "mobile";
-const password = "Mob123456";
+const baseurl = 'http://appointment.cas-mew.gov.kw:8080/qsystem/mobile/rest';
+const username = 'mobile';
+const password = 'Mob123456';
 
 const headers = {
-  "Content-Type": "application/json",
-  Authorization: "Basic " + btoa(username + ":" + password),
+  'Content-Type': 'application/json',
+  Authorization: 'Basic ' + btoa(username + ':' + password),
 };
 
 export const fetchServices = async () => {
   try {
     let res = await fetch(`${baseurl}/services/`, {
-      method: "GET",
+      method: 'GET',
       headers: headers,
     });
     let result = await res.json();
@@ -26,40 +28,42 @@ export const fetchServices = async () => {
   }
 };
 
-export const __fetchOffices = async (city) => {
+export const __fetchOffices = async city => {
   try {
-    const { latitude, longitude } = city;
+    const {latitude, longitude} = city;
     console.log(
-      `${baseurl}/v2/branches?longitude=${longitude}&latitude=${latitude}&radius=100000000`
+      `${baseurl}/v2/branches?longitude=${longitude}&latitude=${latitude}&radius=100000000`,
     );
     let res = await fetch(
       `${baseurl}/v2/branches?longitude=${longitude}&latitude=${latitude}&radius=100000000`,
       {
-        method: "GET",
+        method: 'GET',
         headers: headers,
-      }
+      },
     );
     let result = await res.json();
     if (result.length > 0) {
       return result;
     } else {
+      _Alert(i18n.t('Techical Problem'), 'No branches found');
       return false;
     }
   } catch (error) {
     console.log(error);
+    _Alert(i18n.t('Techical Problem'), error.toString());
     return false;
   }
 };
 
-export const __waitInfo = async (branchId) => {
+export const __waitInfo = async branchId => {
   try {
     console.log(`${baseurl}/v2/branches/${branchId}/services/wait-info`);
     let res = await fetch(
       `${baseurl}/v2/branches/${branchId}/services/wait-info`,
       {
-        method: "GET",
+        method: 'GET',
         headers: headers,
-      }
+      },
     );
     let result = await res.json();
     if (result.length !== 0) {
@@ -81,14 +85,14 @@ export const __waitInfo = async (branchId) => {
   }
 };
 
-export const _checkForBranchLimit = async (branchId) => {
+export const _checkForBranchLimit = async branchId => {
   try {
     let res = await fetch(`http://digimonk.co/api/ticket.php`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ branch_id: branchId }),
+      body: JSON.stringify({branch_id: branchId}),
     });
     res = await res.json();
     return res.status;
@@ -98,14 +102,14 @@ export const _checkForBranchLimit = async (branchId) => {
   }
 };
 
-export const _checkForUniqueCivilId = async (civilId) => {
+export const _checkForUniqueCivilId = async civilId => {
   try {
     let res = await fetch(`http://digimonk.co/api/civil.php`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ civilId: civilId }),
+      body: JSON.stringify({civilId: civilId}),
     });
     res = await res.json();
     return res.status;
@@ -115,9 +119,9 @@ export const _checkForUniqueCivilId = async (civilId) => {
   }
 };
 
-export const _createTicketWithoutTime = async (data) => {
+export const _createTicketWithoutTime = async data => {
   try {
-    const { branchId, civilId } = data;
+    const {branchId, civilId} = data;
     let checkForCivilId = true;
     const checkForBranchId = await _checkForBranchLimit(branchId);
     if (checkForBranchId) {
@@ -125,29 +129,29 @@ export const _createTicketWithoutTime = async (data) => {
     }
     if (checkForCivilId && checkForBranchId) {
       console.log(
-        `${baseurl}/services/18/branches/${branchId}/ticket/issue?delay=0&civilId=${civilId}`
+        `${baseurl}/services/18/branches/${branchId}/ticket/issue?delay=0&civilId=${civilId}`,
       );
       let res = await Axios.post(
         `${baseurl}/services/18/branches/${branchId}/ticket/issue?delay=0&civilId=${civilId}`,
         {},
-        { headers: headers }
+        {headers: headers},
       );
-      const { status } = res;
+      const {status} = res;
       if (status === 200) {
-        return { ok: true, data: res.data };
+        return {ok: true, data: res.data};
       } else {
-        return { ok: false, message: "Service Unavailable" };
+        return {ok: false, message: 'Service Unavailable'};
       }
     } else {
       if (checkForCivilId === false) {
         return {
           ok: false,
-          message: "One Ticket",
+          message: 'One Ticket',
         };
       } else {
         return {
           ok: false,
-          message: "Branch Limit",
+          message: 'Branch Limit',
         };
       }
     }
@@ -155,15 +159,15 @@ export const _createTicketWithoutTime = async (data) => {
     console.log(error);
     return {
       ok: false,
-      message: "There Is Some Technical Error",
+      message: 'There Is Some Technical Error',
       error: error,
     };
   }
 };
 
-export const _createTicketWithTime = async (data) => {
+export const _createTicketWithTime = async data => {
   try {
-    const { branchId, civilId, delay } = data;
+    const {branchId, civilId, delay} = data;
     let checkForCivilId = true;
     const checkForBranchId = await _checkForBranchLimit(branchId);
     if (checkForBranchId) {
@@ -172,29 +176,29 @@ export const _createTicketWithTime = async (data) => {
     if (checkForCivilId && checkForBranchId) {
       console.log(delay);
       console.log(
-        `${baseurl}/services/18/branches/${branchId}/ticket/issue?delay=${delay}&civilId=${civilId}`
+        `${baseurl}/services/18/branches/${branchId}/ticket/issue?delay=${delay}&civilId=${civilId}`,
       );
       let res = await Axios.post(
         `${baseurl}/services/18/branches/${branchId}/ticket/issue?delay=${delay}&civilId=${civilId}`,
         {},
-        { headers: headers }
+        {headers: headers},
       );
-      const { status } = res;
+      const {status} = res;
       if (status === 200) {
-        return { ok: true, data: res.data };
+        return {ok: true, data: res.data};
       } else {
-        return { ok: false, message: "Service Unavailable" };
+        return {ok: false, message: 'Service Unavailable'};
       }
     } else {
       if (checkForCivilId === false) {
         return {
           ok: false,
-          message: "One Ticket",
+          message: 'One Ticket',
         };
       } else {
         return {
           ok: false,
-          message: "Branch Limit",
+          message: 'Branch Limit',
         };
       }
     }
@@ -202,7 +206,7 @@ export const _createTicketWithTime = async (data) => {
     console.log(error);
     return {
       ok: false,
-      message: "There Is Some Technical Error",
+      message: 'There Is Some Technical Error',
       error: error,
     };
   }

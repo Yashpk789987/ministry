@@ -92,7 +92,7 @@ export class AppointmentFormScreen extends Component {
       this.setState({loading: false, offices: result});
     } else {
       this.setState({loading: false});
-      _Alert(i18n.t('Techical Problem'), i18n.t('technical'));
+      //_Alert(i18n.t('Techical Problem'), i18n.t('technical'));
     }
   };
 
