@@ -231,7 +231,7 @@ export class AppointmentFormScreen extends Component {
             width: '95%',
             paddingHorizontal: '2%',
           }}>
-          <View style={{height: '15%', width: '100%'}}>
+          <View style={{height: '16%', width: '100%'}}>
             <View style={{paddingVertical: '2%'}}>
               <TranslatedText
                 style={{color: '#0663C2', fontWeight: 'bold', fontSize: 20}}>
@@ -247,122 +247,125 @@ export class AppointmentFormScreen extends Component {
               hideUnderline={true}
             />
           </View>
-          <View style={{height: '15%', width: '100%'}}>
+          <View style={{height: '16%', width: '100%'}}>
             <View style={{paddingVertical: '2%'}}>
               <TranslatedText
                 style={{color: '#0663C2', fontWeight: 'bold', fontSize: 20}}>
                 State
               </TranslatedText>
             </View>
-            <Picker
-              showSearch={true}
-              listProps={{keyboardShouldPersistTaps: 'always'}}
-              hideUnderline
-              placeholder={i18n.t('Select State')}
-              value={{
-                en: state.en,
-                ar: state.ar,
-                label: language === 'en' ? state.en : state.ar,
-                value: state.id,
-              }}
-              onChange={({value, en, ar}) => {
-                this.filterCities(value);
-                this.setState({state: {id: value, en: en, ar: ar}});
-              }}
-              topBarProps={{title: i18n.t('Select State')}}
-              style={styles.picker}
-              rightIconSource={require('../../assets/icons/chevron-down.png')}>
-              {_.map(states, state => (
-                <Picker.Item
-                  key={state.id}
-                  value={{
-                    en: state.en,
-                    ar: state.ar,
-                    label: language === 'en' ? state.en : state.ar,
-                    value: state.id,
-                  }}
-                />
-              ))}
-            </Picker>
+            <View style={styles.picker}>
+              <Picker
+                showSearch={true}
+                listProps={{keyboardShouldPersistTaps: 'always'}}
+                hideUnderline
+                placeholder={i18n.t('Select State')}
+                value={{
+                  en: state.en,
+                  ar: state.ar,
+                  label: language === 'en' ? state.en : state.ar,
+                  value: state.id,
+                }}
+                onChange={({value, en, ar}) => {
+                  this.filterCities(value);
+                  this.setState({state: {id: value, en: en, ar: ar}});
+                }}
+                topBarProps={{title: i18n.t('Select State')}}
+                rightIconSource={require('../../assets/icons/chevron-down.png')}>
+                {_.map(states, state => (
+                  <Picker.Item
+                    key={state.id}
+                    value={{
+                      en: state.en,
+                      ar: state.ar,
+                      label: language === 'en' ? state.en : state.ar,
+                      value: state.id,
+                    }}
+                  />
+                ))}
+              </Picker>
+            </View>
           </View>
-          <View style={{height: '15%', width: '100%'}}>
+          <View style={{height: '16%', width: '100%'}}>
             <View style={{paddingVertical: '2%'}}>
               <TranslatedText
                 style={{color: '#0663C2', fontWeight: 'bold', fontSize: 20}}>
                 City
               </TranslatedText>
             </View>
-            <Picker
-              showSearch={true}
-              listProps={{keyboardShouldPersistTaps: 'always'}}
-              hideUnderline
-              placeholder={i18n.t('Select City')}
-              value={{
-                label: language === 'en' ? city.en : city.ar,
-                value: city.id,
-                en: city.en,
-                ar: city.ar,
-              }}
-              onChange={({value, ar, en, city}) => {
-                this.setState({city: {id: value, ar: ar, en: en}});
-                this.fetchOfficies(city);
-              }}
-              topBarProps={{title: i18n.t('Select City')}}
-              style={styles.picker}
-              rightIconSource={require('../../assets/icons/chevron-down.png')}>
-              {_.map(cities, city => (
-                <Picker.Item
-                  key={city.id}
-                  value={{
-                    label: language === 'en' ? city.en : city.ar,
-                    value: city.id,
-                    city: city,
-                    ar: city.ar,
-                    en: city.en,
-                  }}
-                />
-              ))}
-            </Picker>
+            <View style={styles.picker}>
+              <Picker
+                showSearch={true}
+                listProps={{keyboardShouldPersistTaps: 'always'}}
+                hideUnderline
+                placeholder={i18n.t('Select City')}
+                value={{
+                  label: language === 'en' ? city.en : city.ar,
+                  value: city.id,
+                  en: city.en,
+                  ar: city.ar,
+                }}
+                onChange={({value, ar, en, city}) => {
+                  this.setState({city: {id: value, ar: ar, en: en}});
+                  this.fetchOfficies(city);
+                }}
+                topBarProps={{title: i18n.t('Select City')}}
+                rightIconSource={require('../../assets/icons/chevron-down.png')}>
+                {_.map(cities, city => (
+                  <Picker.Item
+                    key={city.id}
+                    value={{
+                      label: language === 'en' ? city.en : city.ar,
+                      value: city.id,
+                      city: city,
+                      ar: city.ar,
+                      en: city.en,
+                    }}
+                  />
+                ))}
+              </Picker>
+            </View>
           </View>
-          <View style={{height: '15%', width: '100%'}}>
+          <View style={{height: '16%', width: '100%'}}>
             <View style={{paddingVertical: '2%', paddingTop: '3%'}}>
               <TranslatedText
                 style={{color: '#0663C2', fontWeight: 'bold', fontSize: 20}}>
                 Customer Service Office
               </TranslatedText>
             </View>
-            <Picker
-              showSearch={true}
-              listProps={{keyboardShouldPersistTaps: 'always'}}
-              hideUnderline
-              placeholder={i18n.t('Select Customer Service Office')}
-              value={{label: office.name, value: office.id}}
-              onChange={({office}) => {
-                this.setState({
-                  office: office,
-                  branchOpen: office.branchOpen,
-                  disabled: !office.branchOpen, // for now only after development it will be disabled: !office.branchOpen
-                });
-              }}
-              topBarProps={{title: i18n.t('Select Customer Service Office')}}
-              style={styles.picker}
-              rightIconSource={require('../../assets/icons/chevron-down.png')}>
-              {_.map(offices, office => (
-                <Picker.Item
-                  key={office.id}
-                  value={{
-                    label: office.name,
-                    value: office.id,
+            <View style={styles.picker}>
+              <Picker
+                showSearch={true}
+                listProps={{keyboardShouldPersistTaps: 'always'}}
+                hideUnderline
+                placeholder={i18n.t('Select Customer Service Office')}
+                value={{label: office.name, value: office.id}}
+                onChange={({office}) => {
+                  this.setState({
                     office: office,
-                  }}
-                />
-              ))}
-            </Picker>
+                    branchOpen: office.branchOpen,
+                    disabled: !office.branchOpen, // for now only after development it will be disabled: !office.branchOpen
+                  });
+                }}
+                topBarProps={{title: i18n.t('Select Customer Service Office')}}
+                rightIconSource={require('../../assets/icons/chevron-down.png')}>
+                {_.map(offices, office => (
+                  <Picker.Item
+                    key={office.id}
+                    value={{
+                      label: office.name,
+                      value: office.id,
+                      office: office,
+                    }}
+                  />
+                ))}
+              </Picker>
+            </View>
           </View>
 
           <View
             style={{
-              marginTop: '2%',
+              marginTop: '4%',
               height: '2.5%',
               justifyContent: 'center',
             }}>
@@ -438,13 +441,11 @@ AppointmentFormScreen.contextType = LanguageContext;
 
 const styles = StyleSheet.create({
   picker: {
-    width: '80%',
+    width: '100%',
     height: 45,
     color: Colors.red20,
-    paddingVertical: '2.5%',
+    paddingVertical: 5,
     paddingHorizontal: '2%',
-    justifyContent: 'center',
-    alignItems: 'center',
     borderWidth: 2,
     borderColor: '#0663C2',
     color: '#0663C2',
