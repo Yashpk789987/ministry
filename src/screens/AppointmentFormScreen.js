@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
 
-import {View, Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
 
 import {
   Picker,
@@ -213,7 +219,7 @@ export class AppointmentFormScreen extends Component {
             <MessageBox text={validation} />
           </View>
         ) : null}
-        <Loader loading={loading} />
+        {/* <Loader loading={loading} /> */}
         <SelectAppointmentTimeDialog
           selectedOffice={office}
           modal={modal}
@@ -333,7 +339,7 @@ export class AppointmentFormScreen extends Component {
                 Customer Service Office
               </TranslatedText>
             </View>
-            <View style={styles.picker}>
+            <View style={[styles.picker]}>
               <Picker
                 showSearch={true}
                 listProps={{keyboardShouldPersistTaps: 'always'}}
@@ -362,25 +368,41 @@ export class AppointmentFormScreen extends Component {
               </Picker>
             </View>
           </View>
+          {loading ? (
+            <View style={{padding: '3%'}}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: '#E46D0C',
+                  fontWeight: 'bold',
+                }}>
+                Loading...
+              </Text>
+            </View>
+          ) : null}
 
-          <View
-            style={{
-              marginTop: '4%',
-              height: '2.5%',
-              justifyContent: 'center',
-            }}>
-            {!branchOpen ? (
+          {true && !loading ? (
+            <View
+              style={{
+                marginTop: '4%',
+                height: '2.5%',
+                justifyContent: 'center',
+              }}>
               <TranslatedText
-                style={{fontSize: 14, color: '#E46D0C', fontWeight: 'bold'}}>
+                style={{
+                  fontSize: 14,
+                  color: !branchOpen ? '#E46D0C' : 'white',
+                  fontWeight: 'bold',
+                }}>
                 To be appeared that this store is closed due to its outside
                 working hours
               </TranslatedText>
-            ) : null}
-          </View>
+            </View>
+          ) : null}
 
           <View
             style={{
-              height: !branchOpen ? '11%' : '15%',
+              height: '15%',
               justifyContent: 'center',
             }}>
             <TranslatedText
@@ -442,9 +464,9 @@ AppointmentFormScreen.contextType = LanguageContext;
 const styles = StyleSheet.create({
   picker: {
     width: '100%',
-    height: 45,
+    height: 50,
     color: Colors.red20,
-    paddingVertical: 5,
+    paddingVertical: 8,
     paddingHorizontal: '2%',
     borderWidth: 2,
     borderColor: '#0663C2',
