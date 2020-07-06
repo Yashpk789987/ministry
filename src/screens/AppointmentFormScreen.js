@@ -402,7 +402,7 @@ export class AppointmentFormScreen extends Component {
 
           <View
             style={{
-              height: '15%',
+              height: '12%',
               justifyContent: 'center',
             }}>
             <TranslatedText

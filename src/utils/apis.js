@@ -1,6 +1,6 @@
 import {encode as btoa} from 'base-64';
 import Axios from 'axios';
-import {AsyncStorage} from 'react-native';
+
 import {_Alert} from '../components/Alert';
 import {i18n} from '../translations';
 
@@ -43,7 +43,10 @@ export const __fetchOffices = async city => {
       },
     );
     let result = await res.json();
+
     if (result.length > 0) {
+      // result = result.filter(item => arr.indexOf(`${item.id}`) !== -1);
+      // console.log(result.length);
       return result;
     } else {
       _Alert(i18n.t('Techical Problem'), 'No branches found');
@@ -120,15 +123,41 @@ export const _checkForUniqueCivilId = async civilId => {
   }
 };
 
+export const _commitInDigimonk = async (civilId, branchId) => {
+  try {
+    const res1 = await _checkForUniqueCivilId(civilId);
+    const res2 = await _checkForBranchLimit(branchId);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return true;
+  }
+};
+
+export const _countCheckFromDigimonk = async (civilId, branchId) => {
+  try {
+    let res = await fetch(`http://digimonk.co/api/countresult.php`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({civilId: civilId, branch_id: branchId}),
+    });
+    res = await res.json();
+    return res;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
 export const _createTicketWithoutTime = async data => {
   try {
     const {branchId, civilId} = data;
-    let checkForCivilId = true;
-    const checkForBranchId = await _checkForBranchLimit(branchId);
-    if (checkForBranchId) {
-      checkForCivilId = await _checkForUniqueCivilId(civilId);
-    }
-    if (checkForCivilId && checkForBranchId) {
+    let countResponse = await _countCheckFromDigimonk(civilId, branchId);
+    console.log(branchId);
+    const {branchstatus, civilstatus} = countResponse;
+    if (branchstatus == 'true' && civilstatus == 'true') {
       console.log(
         `${baseurl}/services/18/branches/${branchId}/ticket/issue?delay=0&civilId=${civilId}`,
       );
@@ -139,12 +168,13 @@ export const _createTicketWithoutTime = async data => {
       );
       const {status} = res;
       if (status === 200) {
+        _commitInDigimonk(civilId, branchId);
         return {ok: true, data: res.data};
       } else {
         return {ok: false, message: 'Service Unavailable'};
       }
     } else {
-      if (checkForCivilId === false) {
+      if (civilstatus == 'false') {
         return {
           ok: false,
           message: 'One Ticket',
@@ -169,12 +199,9 @@ export const _createTicketWithoutTime = async data => {
 export const _createTicketWithTime = async data => {
   try {
     const {branchId, civilId, delay} = data;
-    let checkForCivilId = true;
-    const checkForBranchId = await _checkForBranchLimit(branchId);
-    if (checkForBranchId) {
-      checkForCivilId = await _checkForUniqueCivilId(civilId);
-    }
-    if (checkForCivilId && checkForBranchId) {
+    let countResponse = await _countCheckFromDigimonk(civilId, branchId);
+    const {branchstatus, civilstatus} = countResponse;
+    if (branchstatus == 'true' && civilstatus == 'true') {
       console.log(delay);
       console.log(
         `${baseurl}/services/18/branches/${branchId}/ticket/issue?delay=${delay}&civilId=${civilId}`,
@@ -186,12 +213,13 @@ export const _createTicketWithTime = async data => {
       );
       const {status} = res;
       if (status === 200) {
+        _commitInDigimonk(civilId, branchId);
         return {ok: true, data: res.data};
       } else {
         return {ok: false, message: 'Service Unavailable'};
       }
     } else {
-      if (checkForCivilId === false) {
+      if (civilstatus == 'false') {
         return {
           ok: false,
           message: 'One Ticket',
@@ -212,6 +240,43 @@ export const _createTicketWithTime = async data => {
     };
   }
 };
+
+let arr = [
+  '7',
+  '8',
+  '29',
+  '30',
+  '32',
+  '35',
+  '13',
+  '14',
+  '17',
+  '18',
+  '28',
+  '34',
+  '10',
+  '11',
+  '16',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23',
+  '24',
+  '33',
+  '4',
+  '6',
+  '15',
+  '25',
+  '26',
+  '27',
+  '1',
+  '3',
+  '5',
+  '9',
+  '12',
+  '31',
+];
 
 // let global_data_1;
 // let global_data_2;

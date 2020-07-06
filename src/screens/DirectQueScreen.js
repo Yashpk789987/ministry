@@ -110,7 +110,7 @@ export class DirectQueScreen extends Component {
         <Loader loading={loading} />
         <View
           style={{
-            width: '80%',
+            width: '95%',
             height: '5%',
             flexDirection: 'row',
             justifyContent: 'center',
@@ -144,7 +144,7 @@ export class DirectQueScreen extends Component {
         </View>
         <View
           style={{
-            width: '80%',
+            width: '95%',
             height: '10%',
             flexDirection: 'row',
             justifyContent: 'center',
@@ -161,7 +161,7 @@ export class DirectQueScreen extends Component {
           ref="viewShot"
           options={{format: 'png', quality: 0.8}}
           style={{
-            width: '90%',
+            width: '95%',
             height: '30%',
             justifyContent: 'space-around',
             alignItems: 'center',
@@ -196,7 +196,7 @@ export class DirectQueScreen extends Component {
             )}:${format(bookedTime.getMinutes())}`}</Text>
           </View>
         </ViewShot>
-        <View style={{height: '5%', width: '90%'}}>
+        <View style={{height: '5%', width: '95%'}}>
           <TranslatedText
             style={[styles.text, {color: '#E46D0C', fontSize: 18}]}>
             Kindly Save your Que number on your Gallery, press the below button
@@ -205,7 +205,7 @@ export class DirectQueScreen extends Component {
         <View
           style={{
             flex: 1,
-            width: '90%',
+            width: '95%',
             height: '4%',
             justifyContent: 'center',
             alignItems: 'center',
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   messageBox: {
-    width: '90%',
+    width: '95%',
     height: '15%',
     backgroundColor: '#E6B9B8',
     borderWidth: 4,
